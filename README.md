@@ -27,6 +27,7 @@ Since there are many different ways to normalize data, it may be practical to im
 1. Create a switch statement for different normalization methods.
 2. Implement this program as a case for the switch statement. 
 3. Get user input for which case (normalization method) should be used.  
+  
 This will allow a larger program to implement multiple normalization types. 
 ## Normalization Algorithm
 1. Each data point is recalculated by subtracting the mean and dividing by the standard deviation.  
