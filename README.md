@@ -23,7 +23,11 @@ Normalization assignment for Professor Kovalerchuk
 5. Outputted csv files. (C++ output on left, Java output on right)
     * ![image](https://user-images.githubusercontent.com/100527741/155895919-729bc0e8-3f85-4ba6-90a4-7fd8a652e6d8.png)
 ## Implementation
-Run VisCanvas, select normalization method
+Since there are many different ways to normalize data, it may be practical to implement this code into another program. A suggestion for this is below:
+1. Create a switch statement for different normalization methods.
+2. Implement this program as a case for the switch statement. 
+3. Get user input for which case (normalization method) should be used. 
+This will allow a larger program to implement multiple normalization types. 
 ## Normalization Algorithm
 1. Each data point is recalculated by subtracting the mean and dividing by the standard deviation.  
     * ![iamge](https://user-images.githubusercontent.com/100527741/155894497-c83e5aaf-d27e-4f24-91cb-b1f934765bc4.png)  
