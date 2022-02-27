@@ -5,7 +5,7 @@ Normalization assignment for Professor Kovalerchuk
 * Download ZIP then unzip
 ## Compiler Versions Used
 * C++ Implementaion - VS 2022 Version 17.0.4
-* Java Implementation - IntelliJ IDEA 2021.3.2 Version 17.0.2
+* Java Implementation - IntelliJ IDEA 2021.3.2 SDK Version 17.0.2
 ## How to Run
 1. A csv file is needed to run the normalization.  
 2. When running, the program will ask for the file path to the csv file. Enter this path.  
