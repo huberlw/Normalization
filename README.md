@@ -8,10 +8,10 @@ Normalization assignment for Professor Kovalerchuk
 * Java Implementation - IntelliJ IDEA 2021.3.2 SDK Version 17.0.2
 ## How to Run
 1. A csv file is needed to run the normalization.  
-2. When running, the program will ask for the file path to the csv file. Enter this path.  
+2. When running, the program will ask for the path to the csv file. Enter this path.  
 3. Then, the program will ask if the csv file's first column is for ID. Enter 'y' for yes and 'n' for no. 
 4. Last, the program will ask if the csv file's first row is for labels. Enter 'y' for yes and 'n' for no.  
-5. At this point the program will output a "normalized.csv" file in the project directory or give an error is the file could not be found.  
+5. At this point the program will output a "normalized.csv" file in the project directory or give an error if the file could not be found.  
 ### Execution Example
 1. Example Data without ID or labels and with ID and labels.
     * ![image](https://user-images.githubusercontent.com/100527741/155895630-26fed2b6-45c3-42ae-bf22-99dac23936a2.png)
