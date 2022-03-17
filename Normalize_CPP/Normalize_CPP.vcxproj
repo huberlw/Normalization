@@ -139,7 +139,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="normalize.cpp" />
+    <ClCompile Include="createPath.cpp" />
+    <ClCompile Include="tokenize.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tokenize.h" />
+    <ClInclude Include="createPath.h" />
+    <ClInclude Include="normalize.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

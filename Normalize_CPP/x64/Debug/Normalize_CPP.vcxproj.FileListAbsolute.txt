@@ -1,1 +1,3 @@
 C:\Users\wasli\source\repos\Normalize_CPP\x64\Debug\Normalize_CPP.exe
+D:\Resarch Jobs\Projects\Normalize_CPP\x64\Debug\Normalize_CPP.exe
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\x64\Debug\Normalize_CPP.exe

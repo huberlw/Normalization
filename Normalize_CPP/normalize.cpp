@@ -1,267 +1,297 @@
 #include <iostream>
 #include <string>
-#include <sstream>
-#include <fstream>
 #include <vector>
-#include <limits>
-#include <cmath>
+#include "normalize.h"
+
 using namespace std;
 
-bool tokenize(string str, vector<string>& array)
-{
-	string delim = ",";
-	size_t pos = 0;
-	bool empty = true;
-
-	while ((pos = str.find(delim)) != string::npos)
-	{
-		string token = str.substr(0, pos);
-		if (token[0] == 'ï' && token[1] == '»' && token[2] == '¿')
-			token.erase(0, 3);
-
-		array.push_back(token);
-		str.erase(0, pos + delim.length());
-
-		empty = false;
-	}
-	if (str.length() > 0)
-	{
-		array.push_back(str);
-		empty = false;
-	}
-
-
-	return empty;
-}
-
-void normal(vector<string> array, double* allNum)
+void normal(vector<string> array, double* allNum, int* remove, int col)
 {
 	size_t size = array.size();
+	size_t nonNumeric = 0;
+
+	bool done = false;
+	bool cont = false;
+	int keepRows = -1;
 
 	double sum = 0;
 
-	try
+	for (int i = 0; i < size; i++)
 	{
-		for (int i = 0; i < size; i++)
+		try
 		{
 			double n = stod(array.at(i));
 			allNum[i] = n;
 			sum += n;
 		}
-	}
-	catch (exception e)
-	{
-		allNum[0] = -1;
-		return;
+		catch (invalid_argument e)
+		{
+			if (!done)
+				cout << "\nNon-numeric value found in column " << col << ".\nShould column be normalized? (Y / N)" << endl;
+
+			while (!done)
+			{
+				string temp;
+
+				cin >> temp;
+
+				if (temp.compare("Y") == 0 || temp.compare("y") == 0)
+				{
+					cont = true;
+					done = true;
+				}
+				else if (temp.compare("N") == 0 || temp.compare("n") == 0)
+					done = true;
+				else
+					cout << "\nPlease enter a (Y/N).\nShould column be normalized? (Y/N)" << endl;
+			}
+
+			if (cont)
+			{
+				while (keepRows == -1)
+				{
+					cout << "\nWould you like to keep the invalid rows? (Y / N)" << endl;
+				
+					done = false;
+
+					while (!done)
+					{
+						string temp;
+
+						cin >> temp;
+
+						if (temp.compare("Y") == 0 || temp.compare("y") == 0)
+						{
+							keepRows = 1;
+							done = true;
+						}
+						else if (temp.compare("N") == 0 || temp.compare("n") == 0)
+						{
+							keepRows = 2;
+							done = true;
+						}
+						else
+							cout << "\nPlease enter a (Y/N).\nWould you like to keep the invalid rows? (Y / N)" << endl;
+					}
+				}
+				
+				allNum[i] = NAN;
+				nonNumeric++;
+
+				if (keepRows == 2)
+					remove[i] = 1;
+			}
+			else
+			{
+				done = false;
+				bool keep = false;
+
+				cout << "\nShould column " << col << " be kept or deleted?\nEnter 'Y' for keep and 'N' for delete. (Y/N)" << endl;
+
+				while (!done)
+				{
+					string temp;
+
+					cin >> temp;
+
+					if (temp.compare("Y") == 0 || temp.compare("y") == 0)
+					{
+						keep = true;
+						done = true;
+					}
+					else if (temp.compare("N") == 0 || temp.compare("n") == 0)
+						done = true;
+					else
+						cout << "\nPlease enter a (Y/N).\nShould column be normalized? (Y/N)" << endl;
+				}
+
+				if (keep)
+					allNum[0] = -1;
+				else
+					allNum[0] = -2;
+
+				return;
+			}
+		}
 	}
 
-	double mean = sum / size;
+	size_t realSize = size - nonNumeric;
+
+	double mean = sum / realSize;
 	double sd = 0;
 
 	double max = numeric_limits<double>::lowest();
 	double min = numeric_limits<double>::max();
 
+
 	for (int i = 0; i < size; i++)
 	{
-		double temp = pow((allNum[i] - mean), 2);
-		sd += temp;
+		if (isnan(allNum[i]) == 0)
+		{
+			double temp = pow((allNum[i] - mean), 2);
+			sd += temp;
+		}
 	}
 
-	sd /= size;
+	sd /= realSize;
 	sd = sqrt(sd);
+
+	// if sd < 0.1 then ui input for range, then sd gets range/2
+	if (sd < 0.01)
+	{
+		double minSD;
+		double maxSD;
+
+		cout << "\nThe standard deviation for column " << col << " is " << sd << ". This is very small.\nPlease enter a minimum and maximum. The standard deviation will be ((maximum - minimum) / 2)." << endl;
+
+		cout << "\nPlease enter a numerical value for min." << endl;
+
+		while (!(cin >> minSD))
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<double>::max(), '\n');
+			cout << "\nInvalid Input: please enter a numerical value." << endl;
+		}
+
+		cin.ignore(numeric_limits<double>::max(), '\n');
+		cout << "\nPlease enter a numerical value for max." << endl;
+
+		while (!(cin >> maxSD) || maxSD <= minSD)
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<double>::max(), '\n');
+
+			if (maxSD <= minSD)
+				cout << "\nInvalid Input: please enter a numerical value larger than min." << endl;
+			else
+				cout << "\nInvalid Input: please enter a numerical value." << endl;
+		}
+
+		sd = (maxSD - minSD) / 2;
+	}
+
+	if (sd == 0)
+	{
+		cout << "\nStandard Deviation is 0: error division by zero." << endl;
+		cout << "No longer normalizing column " << col << endl;
+
+		allNum[0] = -1;
+
+		return;
+	}
+
 
 	for (int i = 0; i < size; i++)
 	{
-		allNum[i] = (allNum[i] - mean) / sd;
+		if (isnan(allNum[i]) == 0)
+		{
+			allNum[i] = (allNum[i] - mean) / sd;
 
-		if (allNum[i] > max) max = allNum[i];
-		if (allNum[i] < min) min = allNum[i];
+			if (allNum[i] > max) max = allNum[i];
+			if (allNum[i] < min) min = allNum[i];
+		}
 	}
 
 	double div = max - min;
 
+	// if div = 0 then ui input for min and max or 0.5 default
 	if (div != 0)
 	{
 		for (int i = 0; i < size; i++)
 		{
-			allNum[i] = (allNum[i] - min) / div;
-			allNum[i] = round(allNum[i] * 1000.0) / 1000.0;
-		}
-
-	}
-	else
-	{
-		for (int i = 0; i < size; i++)
-			allNum[i] = 0;
-	}
-
-}
-
-int main()
-{
-	string path;
-	string line;
-
-	cout << "Enter csv file path: ";
-	getline(cin, path);
-
-	cout << "\nIs the first column for ID? (Y/N)" << endl;
-
-	bool done = false;
-	bool id = false;
-
-	while (!done)
-	{
-		string temp;
-
-		cin >> temp;
-
-		if (temp.compare("Y") == 0 || temp.compare("y") == 0)
-		{
-			id = true;
-			done = true;
-		}
-		else if (temp.compare("N") == 0 || temp.compare("n") == 0)
-			done = true;
-		else
-			cout << "\nPlease enter a (Y/N).\nIs the first column for ID? (Y/N)" << endl;
-	}
-
-	cout << "Is the first row for labels? (Y/N)" << endl;
-	done = false;
-
-	bool label = false;
-	vector<string> labels;
-
-	while (!done)
-	{
-		string temp;
-
-		cin >> temp;
-
-		if (temp.compare("Y") == 0 || temp.compare("y") == 0)
-		{
-			label = true;
-			done = true;
-		}
-		else if (temp.compare("N") == 0 || temp.compare("n") == 0)
-			done = true;
-		else
-			cout << "\nPlease enter a (Y/N).\nIs the first row for labels? (Y/N)" << endl;
-	}
-
-	ifstream file(path);
-	if (!file)
-	{
-		cout << "File not found";
-		return -1;
-	}
-
-	if (label && getline(file, line))
-		tokenize(line, labels);
-
-	vector<string>* cols = NULL;
-
-	bool first = true;
-	size_t len = 0;
-
-	while (getline(file, line))
-	{
-		vector<string> row;
-
-		bool empty = tokenize(line, row);
-
-		if (empty) continue;
-
-		if (first)
-		{
-			len = row.size();
-
-			cols = new vector<string>[len];
-
-			for (int i = 0; i < len; i++)
-				cols[i].push_back(row.at(i));
-
-			first = false;
-			continue;
-		}
-
-		for (int i = 0; i < len; i++)
-			cols[i].push_back(row.at(i));
-	}
-
-	size_t size;
-	if (cols == NULL)
-	{
-		cout << "File is empty" << endl;
-		return 0;
-	}
-
-	else
-		size = cols[0].size();
-
-
-	double** normData = new double* [len];
-
-	for (int i = 0; i < len; i++)
-		normData[i] = new double[size];
-
-	string** stringData = new string * [len];
-
-	for (int i = 0; i < len; i++)
-		stringData[i] = new string[size];
-
-	for (int i = 0; i < len; i++)
-	{
-		if (!id)
-			normal(cols[i], normData[i]);
-		else
-		{
-			stringData[i] = &cols[i][0];
-			normData[i][0] = -1;
-			id = false;
-		}
-
-		if (normData[i][0] == -1)
-			stringData[i] = &cols[i][0];
-	}
-
-	ofstream wFile;
-	wFile.open("normalized.csv");
-
-	if (label)
-	{
-		for (int i = 0; i < labels.size(); i++)
-		{
-			if (i != labels.size() - 1)
-				wFile << labels.at(i) << ", ";
-			else
-				wFile << labels.at(i) << endl;
-		}
-	}
-
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = 0; j < len; j++)
-		{
-			if (normData[j][0] == -1)
+			if (isnan(allNum[i]) == 0)
 			{
-				if (j != len - 1)
-					wFile << stringData[j][i] << ", ";
-				else
-					wFile << stringData[j][i] << endl;
-			}
-			else
-			{
-				if (j != len - 1)
-					wFile << normData[j][i] << ", ";
-				else
-					wFile << normData[j][i] << endl;
+				allNum[i] = (allNum[i] - min) / div;
+				allNum[i] = round(allNum[i] * 1000.0) / 1000.0;
 			}
 		}
 	}
+	else
+	{
+		cout << "\nMin and Max values in column " << col << " are equal.\nWould you like to manually enter min and max? If no, all values will be defaulted to 0.5. (Y / N)" << endl;
 
-	wFile.close();
+		bool done = false;
+		bool manual = false;
 
-	cout << "Normalization complete" << endl;
+		while (!done)
+		{
+			string temp;
+
+			cin >> temp;
+
+			if (temp.compare("Y") == 0 || temp.compare("y") == 0)
+			{
+				manual = true;
+				done = true;
+			}
+			else if (temp.compare("N") == 0 || temp.compare("n") == 0)
+				done = true;
+			else
+				cout << "\nPlease enter a (Y/N).\nWould you like to manually enter min and max? If no, all values will be defaulted to 0.5. (Y / N)" << endl;
+		}
+
+		if (manual)
+		{
+			cout << "\nPlease enter a numerical value for min." << endl;
+
+			while (!(cin >> min))
+			{
+				cin.clear();
+				cin.ignore(numeric_limits<double>::max(), '\n');
+				cout << "\nInvalid Input: please enter a numerical value." << endl;
+			}
+
+			cin.ignore(numeric_limits<double>::max(), '\n');
+			cout << "\nPlease enter a numerical value for max." << endl;
+
+			while (!(cin >> max) || max <= min)
+			{
+				cin.clear();
+				cin.ignore(numeric_limits<double>::max(), '\n');
+
+				if (max <= min)
+					cout << "\nInvalid Input: please enter a numerical value larger than min." << endl;
+				else
+					cout << "\nInvalid Input: please enter a numerical value." << endl;
+			}
+
+			div = max - min;
+
+			for (int i = 0; i < size; i++)
+			{
+				if (isnan(allNum[i]) == 0)
+				{
+					if (allNum[i] < min)
+					{
+						cout << "\nChoosen min is greater than standardized data in col " << col << " row " << i + 1 << endl;
+						cout << "No longer normalizing column " << col << endl;
+
+						allNum[0] = -1;
+
+						return;
+					}
+					else if (allNum[i] > max)
+					{
+						cout << "\nChoosen max is lesser than standardized data in col " << col << " row " << i + 1 << endl;
+						cout << "No longer normalizing column " << col << endl;
+
+						allNum[0] = -1;
+
+						return;
+					}
+
+					allNum[i] = (allNum[i] - min) / div;
+					allNum[i] = round(allNum[i] * 1000.0) / 1000.0;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < size; i++)
+			{
+				if (isnan(allNum[i]) == 0)
+					allNum[i] = 0.5;
+			}
+		}
+	}
 }

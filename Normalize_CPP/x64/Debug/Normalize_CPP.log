@@ -1,2 +1,14 @@
-﻿  normalize.cpp
-  Normalize_CPP.vcxproj -> C:\Users\wasli\source\repos\Normalize_CPP\x64\Debug\Normalize_CPP.exe
+﻿  main.cpp
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\main.cpp(178,43): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\main.cpp(186,42): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+  normalize.cpp
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\normalize.cpp(152,42): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\normalize.cpp(156,41): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\normalize.cpp(162,42): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\normalize.cpp(240,43): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\normalize.cpp(244,42): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\normalize.cpp(250,43): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+  createPath.cpp
+  tokenize.cpp
+  Generating Code...
+  Normalize_CPP.vcxproj -> D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\x64\Debug\Normalize_CPP.exe
