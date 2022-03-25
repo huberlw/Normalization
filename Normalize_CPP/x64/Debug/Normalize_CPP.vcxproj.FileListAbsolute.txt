@@ -1,3 +1,5 @@
-C:\Users\wasli\source\repos\Normalize_CPP\x64\Debug\Normalize_CPP.exe
-D:\Resarch Jobs\Projects\Normalize_CPP\x64\Debug\Normalize_CPP.exe
-D:\Resarch Jobs\Project Clones\Normalization\Normalize_CPP\x64\Debug\Normalize_CPP.exe
+C:\Users\Lincoln Huber\source\repos\Normalize_CPP\Normalize_CPP\x64\Debug\Normalize_CPP.vcxproj.AssemblyReference.cache
+C:\Users\Lincoln Huber\source\repos\Normalize_CPP\Normalize_CPP\x64\Debug\Normalize_CPP.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\Lincoln Huber\source\repos\Normalize_CPP\Normalize_CPP\x64\Debug\NormalizeCPP.NormForm.resources
+C:\Users\Lincoln Huber\source\repos\Normalize_CPP\Normalize_CPP\x64\Debug\Normalize_CPP.vcxproj.GenerateResource.cache
+C:\Users\Lincoln Huber\source\repos\Normalize_CPP\Normalize_CPP\x64\Debug\NormalizeCPP.userInput.resources
